@@ -15,4 +15,26 @@ app.get("/restaurants/:id", async (req, res) => {
   res.json(foundRestaurant);
 });
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.post("/restaurants", async (req, res) => {
+  let data = await Restaurant.create(req.body);
+  res.json(data);
+});
+
+app.put("/restaurants/:id", async (req, res) => {
+  const replaceRestaurant = await Restaurant.update(req.body, {
+    where: {
+      id: req.params.id,
+    },
+  });
+  res.send("Success");
+});
+//
+app.delete("/restaurants/:id", async (req, res) => {
+  const paramId = req.params.id;
+  const foundRestaurant = await Restaurant.destroy({ where: { id: paramId } });
+  res.send(`Deleted id ${paramId}`);
+});
 module.exports = app;

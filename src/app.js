@@ -1,11 +1,13 @@
 const express = require("express");
 const app = express();
-const Restaurant = require("../models/index");
+const { Restaurant, Menu, Item } = require("../models/index");
 const db = require("../db/connection");
-const { Sequelize } = require("sequelize");
+const { Sequelize, Model } = require("sequelize");
 
 app.get("/restaurants", async (req, res) => {
-  const findRestaurants = await Restaurant.findAll();
+  const findRestaurants = await Restaurant.findAll({
+    include: Menu,
+  });
   res.json(findRestaurants);
 });
 
@@ -37,4 +39,5 @@ app.delete("/restaurants/:id", async (req, res) => {
   const foundRestaurant = await Restaurant.destroy({ where: { id: paramId } });
   res.send(`Deleted id ${paramId}`);
 });
+
 module.exports = app;

@@ -38,7 +38,7 @@ test("Returns correct id 2", async () => {
 test("Posts correctly", async () => {
   const postNew = await request(app)
     .post("/restaurants")
-    .send({ name: "New Place" });
+    .send({ name: "New Place", location: "Here", cuisine: "food" });
   const response = await request(app).get("/restaurants");
   expect(response.body[3].name).toBe("New Place");
 });
@@ -60,4 +60,12 @@ test("Delete restaurants works", async () => {
   const deleteIt = await request(app).delete("/restaurants/1");
   const response = await request(app).get("/restaurants");
   expect(response.body[0].name).toBe("LittleSheep");
+});
+//
+test("POST req throws error if fields are empty", async () => {
+  const postNew = await request(app)
+    .post("/restaurants")
+    .send({ name: "hi", location: "hi", cuisine: "" });
+  console.log(postNew.body);
+  expect(postNew.body.error[0].msg).toBe("Invalid value");
 });
